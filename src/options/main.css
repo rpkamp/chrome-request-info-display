@@ -1,0 +1,67 @@
+html,body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #fff;
+    width: 700px;
+    height: 400px;
+}
+
+.container {
+    padding: 15px;
+    padding-top: 0;
+    max-height: 300px;
+    overflow-y: scroll;
+    border-top: 1px solid #ccc;
+}
+
+.donate {
+    border: 1px solid #ccc;
+    background: #eee;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.donate img {
+    margin-top: 5px;
+}
+
+.donate a {
+    display: block;
+}
+
+textarea {
+    width: 100%;
+}
+
+#json-error {
+    display: none;
+    margin-top: 10px;
+    border: 1px solid red;
+    padding: 2px 5px;
+    color: red;
+}
+
+#license-toggle {
+    display: block;
+    text-align: right;
+    margin-top: 20px;
+}
+
+#license {
+    display: none;
+    margin-top: 2rem;
+}
+
+.disclaimer {
+    margin-top: 2rem;
+    font-style: italic;
+}
+
+th, td {
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}

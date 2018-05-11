@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title data-i18n-key="optionsHeader">Minimal Bookmarks Tree Options</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <label for="configuration">Enter your JSON configuration here:</label>
+            <textarea id="configuration" rows="10" cols="10"></textarea>
+        </div>
+
+        <button type="button" id="save">Save</button>
+
+        <div id="json-error"></div>
+
+        <br /><br />
+        Example:
+        <code>
+            <pre>[
+    {
+        "domain": "^www\\.your-production-website\\.com$",
+        "css": "background-color: #f00;",
+        "text": "PROD: %ip% | %statusLine% | %header:via%"
+    },
+    {
+        "domain": "^www\\.your-staging-website\\.com$",
+        "css": "background-color: #00f;",
+        "text": "STAGING: %ip% | %statusLine%"
+    },
+    {
+        "domain": ".*",
+        "text": "%ip%"
+    }
+]</pre>
+        </code>
+
+        <p>This will:</p>
+
+        <ul>
+            <li>display a red information block with a text like "PROD: 1.2.3.4 | HTTP/1.1 200 OK | 1.1 varnish" on your production site</li>
+            <li>display a blue information block with a text like "STAGING: 1.2.3.4 | HTTP/1.1 200 OK" on your staging site</li>
+            <li>display a gray (the default color) block with text like "1.2.3.4" on any other website</li>
+        </ul>
+
+        <p>Rules:</p>
+
+        <ul>
+            <li>"domain" is required and is a regular expression (case insensitive by default). Make sure to escape . twice (\\.) because otherwise the JSON parser fails to load your configuration</li>
+            <li>"css" is optional and can contain any CSS you like to be applied to the block</li>
+            <li>"text" is required and can contain placeholders like %ip%. A full list of supported placeholders is listed below. You can use HTML here.</li>
+            <li>Configurations will be tried one by one, the first one that matches is displayed, and all following configurations will be ignored. So be sure to put the most specific "domain" checks first</li>
+        </ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Placeholder</th>
+                    <th>Replacement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>%ip%</td>
+                    <td>The IP the website is server from</td>
+                </tr>
+                <tr>
+                    <td>%statusCode%</td>
+                    <td>The HTTP status code of the request (e.g. 200)</td>
+                </tr>
+                <tr>
+                    <td>%statusLine%</td>
+                    <td>The HTTP status line of the request (e.g. HTTP/1.1 200 OK)</td>
+                </tr>
+                <tr>
+                    <td>%url%</td>
+                    <td>The fetched URL</td>
+                </tr>
+                <tr>
+                    <td>%method%</td>
+                    <td>The HTTP method used for the request (e.g. GET, POST)</td>
+                </tr>
+                <tr>
+                    <td>%initiator%</td>
+                    <td>What initiated the request</td>
+                </tr>
+                <tr>
+                    <td>%header:foo%</td>
+                    <td>Contents of HTTP header 'foo'. Header name must be lower case, i.e., to get the contents of the "Server" header you need to use %header:server%.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            There is some more Chrome internal stuff that can be replaced as well, like %tabId%. For a full list of options see the details object on <a href="https://developer.chrome.com/extensions/webRequest#event-onResponseStarted">https://developer.chrome.com/extensions/webRequest#event-onResponseStarted</a>.
+        </p>
+
+        <p>Any placeholder that cannot be resolved for a request, like a header that does not exist, will be replaced with <i>undefined</i></p>
+
+        <a id="license-toggle" href="#">Show license</a>
+
+        <div id="license">
+            <p>Copyright (c) 2018, R&eacute;mon van de Kamp</p>
+            <p>All rights reserved.</p>
+            <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+            <ol>
+                <li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
+                <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li>
+            </ol>
+            <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+        </div>
+    </div>
+    <div class="donate">
+        <strong>Like this extension? Buy me a coffee 🙂</strong>
+        <a href="https://paypal.me/rpkamp"><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="Donate with paypal" /></a>
+    </div>
+    <script src="index.mjs"></script>
+</body>
+</html>

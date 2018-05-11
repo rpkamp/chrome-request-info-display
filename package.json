@@ -1,0 +1,27 @@
+{
+  "name": "chrome-request-info-display",
+  "version": "0.1.0",
+  "description": "Add an information block to websites to indicate website IP, headers, etc",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rpkamp/chrome-request-info-display.git"
+  },
+  "author": "Remon van de Kamp (rpkamp@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rpkamp/chrome-request-info-display/issues"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha -r @std/esm tests/**.mjs"
+  },
+  "dependencies": {
+    "@std/esm": "^0.26.0"
+  }
+}
