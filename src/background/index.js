@@ -1,5 +1,5 @@
-import HostnameMatcher from '../HostnameMatcher.mjs';
-import replaceRequestInfo from '../replaceRequestInfo.mjs';
+import HostnameMatcher from '../HostnameMatcher.js';
+import replaceRequestInfo from '../replaceRequestInfo.js';
 
 const updates = [];
 let matchers = [];
@@ -47,7 +47,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
 
       const injectScript = () => {
         chrome.tabs.executeScript(data.tabId, {
-            file: 'contentScripts/banner.mjs',
+            file: 'contentScripts/banner.js',
             runAt: 'document_start'
           }, sendMessage
         );
