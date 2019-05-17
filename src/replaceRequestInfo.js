@@ -17,7 +17,5 @@ export default function(requestInfo, text) {
     text = text.replace(`%${property}%`, requestInfo[property]);
   }
 
-  text = text.replace(/%.*?%/g, '<i>undefined</i>');
-
-  return text;
+  return text.replace(/%.*?%/g, '<i>undefined</i>');
 }
