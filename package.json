@@ -19,9 +19,9 @@
     "mocha": "^5.1.1"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha -r @std/esm tests/**.mjs"
+    "test": "node_modules/mocha/bin/mocha -r esm tests/**.js"
   },
   "dependencies": {
-    "@std/esm": "^0.26.0"
+    "esm": "^3.2.25"
   }
 }
