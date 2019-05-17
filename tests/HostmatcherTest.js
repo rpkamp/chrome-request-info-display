@@ -4,12 +4,12 @@ import chai from 'chai';
 const expect = chai.expect;
 
 describe('HostMatcher', () => {
-	it('should match when host matches', () => {
-		const matcher = new HostMatcher('www\.example\.com');
-		const input = 'https://www.example.com/foo/bar';
+  it('should match when host matches', () => {
+    const matcher = new HostMatcher('www\.example\.com');
+    const input = 'https://www.example.com/foo/bar';
 
-		expect(matcher.matches(input)).to.be.true;
-	});
+    expect(matcher.matches(input)).to.be.true;
+  });
 
   it('should match when host matches partially', () => {
     const matcher = new HostMatcher('example\.com');
