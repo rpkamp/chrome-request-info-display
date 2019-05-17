@@ -36,12 +36,29 @@ textarea {
     width: 100%;
 }
 
-#json-error {
+#save-wrapper {
+    overflow: hidden;
+}
+
+#save {
+    float: left;
+    margin-right: 10px;
+}
+
+#save-success,
+#save-error {
+    float: left;
     display: none;
-    margin-top: 10px;
     border: 1px solid red;
     padding: 2px 5px;
     color: red;
+    margin-top: 2px;
+}
+
+#save-success {
+    margin-top: 3px;
+    color: #080;
+    border: 0;
 }
 
 #license-toggle {

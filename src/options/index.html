@@ -12,9 +12,12 @@
             <textarea id="configuration" rows="10" cols="10"></textarea>
         </div>
 
-        <button type="button" id="save">Save</button>
+        <div id="save-wrapper">
+            <button type="button" id="save">Save</button>
 
-        <div id="json-error"></div>
+            <div id="save-error"></div>
+            <div id="save-success"></div>
+        </div>
 
         <br /><br />
         Example:
@@ -116,6 +119,6 @@
         <strong>Like this extension? Buy me a coffee 🙂</strong>
         <a href="https://paypal.me/rpkamp"><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="Donate with paypal" /></a>
     </div>
-    <script src="index.mjs"></script>
+    <script type="module" src="index.js"></script>
 </body>
 </html>
