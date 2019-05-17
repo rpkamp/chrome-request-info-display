@@ -7,3 +7,5 @@
 Like this extension? Buy me a coffee 🙂
 
 [![Donate with PayPal](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)][donate]
+
+[donate]: https://paypal.me/rpkamp
