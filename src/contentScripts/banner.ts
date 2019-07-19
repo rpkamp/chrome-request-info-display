@@ -1,11 +1,11 @@
-window.chrome.runtime.onMessage.addListener((message) => {
+window.chrome.runtime.onMessage.addListener((message: any) => {
   const callback = () => {
     const div = document.createElement('div');
     div.className = 'environmentIndicatorBanner';
 
     const style = document.createElement('link');
     style.rel = 'stylesheet';
-    style.href = chrome.runtime.getURL('contentScripts/contents.css');
+    style.href = chrome.runtime.getURL('contents.css');
 
     const contents = document.createElement('div');
     contents.className = 'environmentIndicatorBannerContents';
@@ -15,10 +15,10 @@ window.chrome.runtime.onMessage.addListener((message) => {
     shadowRoot.appendChild(style);
     shadowRoot.appendChild(contents);
 
-    document.querySelector('body').appendChild(div);
+    document.body.appendChild(div);
 
     div.addEventListener('click', () => div.classList.toggle('environmentIndicatorBanner--left'));
-  };1
+  };
 
   if (document.readyState !== 'loading') {
     callback();

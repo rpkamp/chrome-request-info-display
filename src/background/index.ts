@@ -1,9 +1,17 @@
-import HostnameMatcher from '../HostnameMatcher.js';
-import replaceRequestInfo from '../replaceRequestInfo.js';
+import HostnameMatcher from '../HostnameMatcher';
+import replaceRequestInfo from '../replaceRequestInfo';
+import WebResponseHeadersDetails = chrome.webRequest.WebResponseHeadersDetails;
+import MessageSender = chrome.runtime.MessageSender;
 
-const updates = [];
-let matchers = [];
-let configuration = {};
+type Config = {
+  domain: string,
+  text: string,
+  css: string
+}
+
+const updates: { [s: string]: Function } = {};
+let matchers: HostnameMatcher[] = [];
+let configuration: Config[] = [];
 const defaultConfiguration = "[\n" +
   "    {\n" +
   "        \"domain\": \".*\",\n" +
@@ -31,7 +39,7 @@ window.chrome.tabs.onUpdated.addListener((tabId, info) => {
 });
 
 window.chrome.webRequest.onResponseStarted.addListener(
-  (data) => {
+  (data: WebResponseHeadersDetails) => {
     if (data.tabId === -1) {
       return;
     }
@@ -47,7 +55,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
 
       const injectScript = () => {
         chrome.tabs.executeScript(data.tabId, {
-            file: 'contentScripts/banner.js',
+            file: 'banner.js',
             runAt: 'document_start'
           }, sendMessage
         );
@@ -62,7 +70,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
 
       updates[data.tabId] = () => {
         chrome.tabs.insertCSS(data.tabId, {
-          file: 'contentScripts/banner.css',
+          file: 'banner.css',
           runAt: 'document_start'
         }, injectCss)
       };
@@ -75,7 +83,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
   ['responseHeaders']
 );
 
-window.chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: any, sender: MessageSender, sendResponse: Function) => {
   if (message.action === 'saveConfiguration') {
     window.chrome.storage.sync.set({configuration: message.configuration}, () => {
       init();
@@ -89,7 +97,5 @@ window.chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const response = {configuration: data.configuration ? data.configuration : defaultConfiguration};
       sendResponse(response);
     });
-
-    return true;
   }
 });
