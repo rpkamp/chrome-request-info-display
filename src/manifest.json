@@ -22,5 +22,8 @@
         "16": "icons/32.png",
         "48": "icons/48.png",
         "128": "icons/128.png"
-    }
+    },
+    "web_accessible_resources": [
+        "contentScripts/contents.css"
+    ]
 }

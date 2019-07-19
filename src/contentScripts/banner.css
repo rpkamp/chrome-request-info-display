@@ -1,20 +1,8 @@
 .environmentIndicatorBanner {
-    font: 14px/1.8 'Roboto', Helvetica, Arial;
     position: fixed;
     bottom: 0;
     right: 1%;
-    cursor: default;
-    background-color: #888;
-    color: #fff;
-    box-shadow: 0 0 10px 3px rgba(0,0,0,0.75);
     z-index: 9999999999;
-    padding: 15px 30px;
-    border-radius: 4px 4px 0 0;
-    vertical-align: baseline;
-    user-select: none;
-    width: auto;
-    height: auto;
-    margin: 0;
 }
 
 .environmentIndicatorBanner--left {
