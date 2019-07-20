@@ -31,7 +31,7 @@ Encore
     },
     {
       from: './src/options',
-      pattern: /\.html$/,
+      pattern: /\.(html|css)$/,
       includeSubdirectories: false
     }
   ])

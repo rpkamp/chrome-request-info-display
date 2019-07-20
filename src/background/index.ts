@@ -1,7 +1,9 @@
 import HostnameMatcher from '../HostnameMatcher';
-import replaceRequestInfo from '../replaceRequestInfo';
-import WebResponseHeadersDetails = chrome.webRequest.WebResponseHeadersDetails;
 import MessageSender = chrome.runtime.MessageSender;
+import WebResponseCacheDetails = chrome.webRequest.WebResponseCacheDetails;
+import {LegacyResponseInfoReplacer} from "../LegacyResponseInfoReplacer";
+import {ChainedResponseInfoReplacer} from "../ChainedResponseInfoReplacer";
+import {MustacheResponseInfoReplacer} from "../MustacheResponseInfoReplacer";
 
 type Config = {
   domain: string,
@@ -9,13 +11,18 @@ type Config = {
   css: string
 }
 
-const updates: { [s: string]: Function } = {};
 let matchers: HostnameMatcher[] = [];
 let configuration: Config[] = [];
+const updates: { [s: string]: Function } = {};
+const replacer = new ChainedResponseInfoReplacer([
+  new LegacyResponseInfoReplacer(),
+  new MustacheResponseInfoReplacer()
+]);
+
 const defaultConfiguration = "[\n" +
   "    {\n" +
   "        \"domain\": \".*\",\n" +
-  "        \"text\": \"%ip%\"\n" +
+  "        \"text\": \"{{ip}}\"\n" +
   "    }\n" +
   ']';
 
@@ -39,7 +46,7 @@ window.chrome.tabs.onUpdated.addListener((tabId, info) => {
 });
 
 window.chrome.webRequest.onResponseStarted.addListener(
-  (data: WebResponseHeadersDetails) => {
+  (data: WebResponseCacheDetails) => {
     if (data.tabId === -1) {
       return;
     }
@@ -50,7 +57,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
       }
 
       const sendMessage = () => {
-        chrome.tabs.sendMessage(data.tabId, { text: replaceRequestInfo(data, configuration[i].text) });
+        chrome.tabs.sendMessage(data.tabId, { text: replacer.replace(data, configuration[i].text) });
       };
 
       const injectScript = () => {
@@ -94,8 +101,10 @@ chrome.runtime.onMessage.addListener((message: any, sender: MessageSender, sendR
 
   if (message.action === 'loadConfiguration') {
     window.chrome.storage.sync.get(['configuration'], (data) => {
-      const response = {configuration: data.configuration ? data.configuration : defaultConfiguration};
-      sendResponse(response);
+      const configuration = typeof data.configuration !== 'undefined' ? data.configuration : defaultConfiguration;
+      sendResponse({configuration});
     });
+
+    return true;
   }
 });

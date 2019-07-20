@@ -1,7 +1,14 @@
 const configuration = <HTMLInputElement>document.querySelector('#configuration');
 const jsonError = <HTMLDivElement>document.querySelector('#json-error');
+const deprecationNotice = <HTMLDivElement>document.querySelector('#deprecation-notice');
 
 chrome.runtime.sendMessage({action: 'loadConfiguration'}, (response) => {
+  if (response.configuration.indexOf('%') !== -1) {
+    deprecationNotice.innerHTML = 'Your configuration appears to contain deprecated placeholders with % signs.<br />' +
+      'Please replace them with the new {{ }} placeholder syntax. See below.';
+    deprecationNotice.style.display = 'block';
+  }
+
   configuration.value = response.configuration;
 });
 

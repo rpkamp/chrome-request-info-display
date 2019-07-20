@@ -2,12 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title data-i18n-key="optionsHeader">Minimal Bookmarks Tree Options</title>
-    <link rel="stylesheet" type="text/css" href="main.css" />
+    <title data-i18n-key="optionsHeader">RequestInfo Display Options</title>
+    <link rel="stylesheet" type="text/css" href="options.css" />
 </head>
 <body>
     <div class="container">
         <div class="row">
+            <div id="deprecation-notice"></div>
             <label for="configuration">Enter your JSON configuration here:</label>
             <textarea id="configuration" rows="10" cols="10"></textarea>
         </div>
@@ -20,27 +21,25 @@
         </div>
 
         <br /><br />
-        Example:
+        <h2>Example</h2>
         <code>
             <pre>[
     {
         "domain": "^www\\.your-production-website\\.com$",
         "css": "background-color: #f00;",
-        "text": "PROD: %ip% | %statusLine% | %header:via%"
+        "text": "PROD: {{ip}} | {{statusLine}} | {{header.via}}"
     },
     {
         "domain": "^www\\.your-staging-website\\.com$",
         "css": "background-color: #00f;",
-        "text": "STAGING: %ip% | %statusLine%"
+        "text": "STAGING: {{ip}} | {{statusLine}}"
     },
     {
         "domain": ".*",
-        "text": "%ip%"
+        "text": "{{ip}}"
     }
 ]</pre>
         </code>
-
-        <p>This will:</p>
 
         <ul>
             <li>display a red information block with a text like "PROD: 1.2.3.4 | HTTP/1.1 200 OK | 1.1 varnish" on your production site</li>
@@ -48,14 +47,15 @@
             <li>display a gray (the default color) block with text like "1.2.3.4" on any other website</li>
         </ul>
 
-        <p>Rules:</p>
+        <h2>Configuration format</h2>
 
         <ul>
-            <li>"domain" is required and is a regular expression (case insensitive by default). Make sure to escape . twice (\\.) because otherwise the JSON parser fails to load your configuration</li>
-            <li>"css" is optional and can contain any CSS you like to be applied to the block</li>
-            <li>"text" is required and can contain placeholders like %ip%. A full list of supported placeholders is listed below. You can use HTML here.</li>
-            <li>Configurations will be tried one by one, the first one that matches is displayed, and all following configurations will be ignored. So be sure to put the most specific "domain" checks first</li>
+            <li><strong>domain</strong> (required): A regular expression (case insensitive by default). Make sure to escape . twice (\\.) because otherwise the JSON parser fails to load your configuration</li>
+            <li><strong>css</strong> (optional): Any CSS you like to be applied to the block</li>
+            <li><strong>text</strong> (required): Text to be displayed; may contain placeholders like {{ip}}. A full list of supported placeholders is listed below. You can use HTML here.</li>
         </ul>
+
+        <p>Configurations will be tried one by one, the first one that matches is displayed, and all following configurations will be ignored. So be sure to put the most specific "domain" checks first</p>
 
         <table>
             <thead>
@@ -66,46 +66,61 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>%ip%</td>
+                    <td><code>{{ip}}</code></td>
                     <td>The IP the website is server from</td>
                 </tr>
                 <tr>
-                    <td>%statusCode%</td>
+                    <td><code>{{statusCode}}</code></td>
                     <td>The HTTP status code of the request (e.g. 200)</td>
                 </tr>
                 <tr>
-                    <td>%statusLine%</td>
+                    <td><code>{{statusLine}}</code></td>
                     <td>The HTTP status line of the request (e.g. HTTP/1.1 200 OK)</td>
                 </tr>
                 <tr>
-                    <td>%url%</td>
+                    <td><code>{{url}}</code></td>
                     <td>The fetched URL</td>
                 </tr>
                 <tr>
-                    <td>%method%</td>
+                    <td><code>{{method}}</code></td>
                     <td>The HTTP method used for the request (e.g. GET, POST)</td>
                 </tr>
                 <tr>
-                    <td>%initiator%</td>
+                    <td><code>{{initiator}}</code></td>
                     <td>What initiated the request</td>
                 </tr>
                 <tr>
-                    <td>%header:foo%</td>
-                    <td>Contents of HTTP header 'foo'. Header name must be lower case, i.e., to get the contents of the "Server" header you need to use %header:server%.</td>
+                    <td><code>{{headers.foo}}</code></td>
+                    <td>
+                        Contents of HTTP header <code>foo</code>.
+                        Header name must be lower case, i.e., to get the contents of the <code>Via</code> header you need to use
+                        <code>{{headers.via}}</code>.
+                        In case a header contains dashes or underscores, these need to be removed, and the next character must be capitalized.
+                        So for example to get the value of the <code>X-Server</code> header you would need <code>{{headers.xServer}}</code>,
+                        for the header <code>x_foo</code> you need <code>{{headers.xFoo}}</code>, etc.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>{{fromCache}}</code></td>
+                    <td>Indicates whether the response was fetched from cache or not.</td>
                 </tr>
             </tbody>
         </table>
 
-        <p>
-            There is some more Chrome internal stuff that can be replaced as well, like %tabId%. For a full list of options see the details object on <a href="https://developer.chrome.com/extensions/webRequest#event-onResponseStarted">https://developer.chrome.com/extensions/webRequest#event-onResponseStarted</a>.
-        </p>
+        <h2>Conditionals:</h2>
 
-        <p>Any placeholder that cannot be resolved for a request, like a header that does not exist, will be replaced with <i>undefined</i></p>
+        <p>This extension uses <a href="https://mustache.github.io/">Mustache</a> for rendering, so you can also use conditionals if you like. For example</p>
+
+        <code><pre>
+{{#headers.xServer}}Server: {{headers.xServer}}{{/headers.xServer}}
+</pre></code>
+
+        <p>If there is an <code>X-Server</code> header then <code>Server: {{headers.xServer}}</code> will be rendered, otherwise if will not be.</p>
 
         <a id="license-toggle" href="#">Show license</a>
 
         <div id="license">
-            <p>Copyright (c) 2018, R&eacute;mon van de Kamp</p>
+            <p>Copyright (c) 2019, R&eacute;mon van de Kamp</p>
             <p>All rights reserved.</p>
             <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
             <ol>

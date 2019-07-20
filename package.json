@@ -20,6 +20,7 @@
     "@symfony/webpack-encore": "^0.27.0",
     "@types/chrome": "0.0.86",
     "@types/jest": "^24.0.15",
+    "@types/mustache": "^0.8.32",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
     "jest": "^24.8.0",
@@ -29,5 +30,7 @@
     "ts-loader": "^5.4.5",
     "typescript": "^3.5.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "mustache": "^3.0.1"
+  }
 }
