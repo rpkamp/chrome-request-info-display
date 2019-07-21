@@ -45,6 +45,7 @@ textarea {
     margin-right: 10px;
 }
 
+#deprecation-notice,
 #save-success,
 #save-error {
     float: left;
@@ -55,10 +56,19 @@ textarea {
     margin-top: 2px;
 }
 
+#deprecation-notice {
+    float: none;
+    margin-top: 20px;
+}
+
 #save-success {
     margin-top: 3px;
     color: #080;
     border: 0;
+}
+
+#deprecation-notice {
+    margin-bottom: 20px;
 }
 
 #license-toggle {

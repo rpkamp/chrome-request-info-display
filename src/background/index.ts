@@ -1,13 +1,28 @@
-import HostnameMatcher from '../HostnameMatcher.js';
-import replaceRequestInfo from '../replaceRequestInfo.js';
+import HostnameMatcher from '../HostnameMatcher';
+import MessageSender = chrome.runtime.MessageSender;
+import WebResponseCacheDetails = chrome.webRequest.WebResponseCacheDetails;
+import {LegacyResponseInfoReplacer} from "../LegacyResponseInfoReplacer";
+import {ChainedResponseInfoReplacer} from "../ChainedResponseInfoReplacer";
+import {MustacheResponseInfoReplacer} from "../MustacheResponseInfoReplacer";
 
-const updates = [];
-let matchers = [];
-let configuration = {};
+type Config = {
+  domain: string,
+  text: string,
+  css: string
+}
+
+let matchers: HostnameMatcher[] = [];
+let configuration: Config[] = [];
+const updates: { [s: string]: Function } = {};
+const replacer = new ChainedResponseInfoReplacer([
+  new LegacyResponseInfoReplacer(),
+  new MustacheResponseInfoReplacer()
+]);
+
 const defaultConfiguration = "[\n" +
   "    {\n" +
   "        \"domain\": \".*\",\n" +
-  "        \"text\": \"%ip%\"\n" +
+  "        \"text\": \"{{ip}}\"\n" +
   "    }\n" +
   ']';
 
@@ -31,7 +46,7 @@ window.chrome.tabs.onUpdated.addListener((tabId, info) => {
 });
 
 window.chrome.webRequest.onResponseStarted.addListener(
-  (data) => {
+  (data: WebResponseCacheDetails) => {
     if (data.tabId === -1) {
       return;
     }
@@ -42,12 +57,12 @@ window.chrome.webRequest.onResponseStarted.addListener(
       }
 
       const sendMessage = () => {
-        chrome.tabs.sendMessage(data.tabId, { text: replaceRequestInfo(data, configuration[i].text) });
+        chrome.tabs.sendMessage(data.tabId, { text: replacer.replace(data, configuration[i].text) });
       };
 
       const injectScript = () => {
         chrome.tabs.executeScript(data.tabId, {
-            file: 'contentScripts/banner.js',
+            file: 'banner.js',
             runAt: 'document_start'
           }, sendMessage
         );
@@ -62,7 +77,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
 
       updates[data.tabId] = () => {
         chrome.tabs.insertCSS(data.tabId, {
-          file: 'contentScripts/banner.css',
+          file: 'banner.css',
           runAt: 'document_start'
         }, injectCss)
       };
@@ -75,7 +90,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
   ['responseHeaders']
 );
 
-window.chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: any, sender: MessageSender, sendResponse: Function) => {
   if (message.action === 'saveConfiguration') {
     window.chrome.storage.sync.set({configuration: message.configuration}, () => {
       init();
@@ -86,8 +101,8 @@ window.chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'loadConfiguration') {
     window.chrome.storage.sync.get(['configuration'], (data) => {
-      const response = {configuration: data.configuration ? data.configuration : defaultConfiguration};
-      sendResponse(response);
+      const configuration = typeof data.configuration !== 'undefined' ? data.configuration : defaultConfiguration;
+      sendResponse({configuration});
     });
 
     return true;
