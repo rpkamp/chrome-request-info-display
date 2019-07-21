@@ -20,7 +20,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
           name: Run tests
-          command: yarn run test
+          command: make test
 
 workflows:
   version: 2
