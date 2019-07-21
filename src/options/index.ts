@@ -1,6 +1,8 @@
-const configuration = <HTMLInputElement>document.querySelector('#configuration');
-const jsonError = <HTMLDivElement>document.querySelector('#json-error');
 const deprecationNotice = <HTMLDivElement>document.querySelector('#deprecation-notice');
+const configuration = <HTMLInputElement>document.querySelector('#configuration');
+const saveButton = <HTMLButtonElement>document.querySelector('#save');
+const saveSuccess = <HTMLDivElement>document.querySelector('#save-success');
+const saveError = <HTMLDivElement>document.querySelector('#save-error');
 
 chrome.runtime.sendMessage({action: 'loadConfiguration'}, (response) => {
   if (response.configuration.indexOf('%') !== -1) {
@@ -18,26 +20,28 @@ licenceToggle.addEventListener('click', () => {
   (document.querySelector('#license') as HTMLDivElement).style.display = 'block';
 });
 
-const saveButton = <HTMLButtonElement>document.querySelector('#save');
 saveButton.addEventListener('click', () => {
   try {
     JSON.parse(configuration.value);
   } catch (e) {
-    jsonError.style.display = 'block';
-    jsonError.innerText = e.message;
+    saveError.style.display = 'block';
+    saveError.innerText = e.message;
 
     return;
   }
 
-  jsonError.style.display = 'none';
-  jsonError.innerText = '';
+  saveError.style.display = 'none';
+  saveError.innerText = '';
 
   saveButton.innerText = 'Saving...';
 
   window.chrome.runtime.sendMessage({
     action: 'saveConfiguration',
     configuration: configuration.value
+  }, () => {
+    saveButton.innerText = 'Save';
+    saveSuccess.innerText = 'Save successful!';
+    saveSuccess.style.display = 'block';
+    setTimeout(() => saveSuccess.style.display = 'none', 3000);
   });
-
-  saveButton.innerText = 'Save';
 });

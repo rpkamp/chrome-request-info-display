@@ -56,6 +56,11 @@ textarea {
     margin-top: 2px;
 }
 
+#deprecation-notice {
+    float: none;
+    margin-top: 20px;
+}
+
 #save-success {
     margin-top: 3px;
     color: #080;
