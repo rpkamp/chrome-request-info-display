@@ -56,30 +56,29 @@ window.chrome.webRequest.onResponseStarted.addListener(
         continue;
       }
 
-      const sendMessage = () => {
-        chrome.tabs.sendMessage(data.tabId, { text: replacer.replace(data, configuration[i].text) });
-      };
-
-      const injectScript = () => {
-        chrome.tabs.executeScript(data.tabId, {
-            file: 'banner.js',
-            runAt: 'document_start'
-          }, sendMessage
-        );
-      };
-
-      const injectCss = () => {
-        chrome.tabs.insertCSS(data.tabId, {
-          code: `.environmentIndicatorBanner { ${'css' in configuration[i] ? configuration[i].css : ''} }`,
-          runAt: 'document_start'
-        }, injectScript)
-      };
-
       updates[data.tabId] = () => {
-        chrome.tabs.insertCSS(data.tabId, {
-          file: 'banner.css',
-          runAt: 'document_start'
-        }, injectCss)
+        chrome.tabs.insertCSS(
+          data.tabId, {
+            file: 'banner.css',
+            runAt: 'document_start'
+          },
+          () => {
+            chrome.tabs.executeScript(
+              data.tabId, {
+                file: 'banner.js',
+                runAt: 'document_start'
+              },
+              () => {
+                chrome.tabs.sendMessage(
+                  data.tabId, {
+                    text: replacer.replace(data, configuration[i].text),
+                    css: 'css' in configuration[i] ? configuration[i].css : ''
+                  }
+                );
+              }
+            );
+          }
+        )
       };
       break;
     }
