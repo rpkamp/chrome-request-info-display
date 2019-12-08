@@ -3,7 +3,7 @@
     "manifest_version": 2,
     "content_security_policy": "script-src 'self'; object-src 'self'",
     "description": "Add an information block to websites to indicate website IP, headers, etc",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "minimum_chrome_version": "70",
     "background": {
         "scripts": [
