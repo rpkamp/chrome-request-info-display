@@ -15,22 +15,22 @@
     "url": "https://github.com/rpkamp/chrome-request-info-display/issues"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.6",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "@symfony/webpack-encore": "^0.27.0",
     "@types/chrome": "0.0.86",
-    "@types/jest": "^24.0.23",
+    "@types/jest": "^24.9.1",
     "@types/mustache": "^0.8.32",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
     "jest": "^24.9.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "sass-loader": "^7.3.1",
-    "ts-jest": "^24.2.0",
+    "ts-jest": "^24.3.0",
     "ts-loader": "^5.4.5",
-    "typescript": "^3.7.3"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
-    "mustache": "^3.1.0"
+    "mustache": "^3.2.1"
   }
 }
