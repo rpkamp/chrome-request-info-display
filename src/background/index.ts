@@ -28,7 +28,7 @@ const defaultConfiguration = "[\n" +
 
 function init() {
   matchers = [];
-  window.chrome.storage.sync.get(['configuration'], (response) => {
+  chrome.storage.sync.get(['configuration'], (response) => {
     configuration = response.configuration ? JSON.parse(response.configuration) : JSON.parse(defaultConfiguration);
     configuration.forEach((domain, i) => {
       matchers[i] = new HostnameMatcher(domain.domain);
@@ -38,14 +38,14 @@ function init() {
 
 init();
 
-window.chrome.tabs.onUpdated.addListener((tabId, info) => {
+chrome.tabs.onUpdated.addListener((tabId, info) => {
   if (info.status === 'complete' && tabId in updates) {
     updates[tabId]();
     delete updates[tabId];
   }
 });
 
-window.chrome.webRequest.onResponseStarted.addListener(
+chrome.webRequest.onResponseStarted.addListener(
   (data: WebResponseCacheDetails) => {
     if (data.tabId === -1) {
       return;
@@ -57,17 +57,15 @@ window.chrome.webRequest.onResponseStarted.addListener(
       }
 
       updates[data.tabId] = () => {
-        chrome.tabs.insertCSS(
-          data.tabId, {
-            file: 'banner.css',
-            runAt: 'document_start'
-          },
+        chrome.scripting.insertCSS({
+          target: { tabId: data.tabId },
+          files: ['banner.css']
+        }).then(
           () => {
-            chrome.tabs.executeScript(
-              data.tabId, {
-                file: 'banner.js',
-                runAt: 'document_start'
-              },
+            chrome.scripting.executeScript({
+              target: { tabId: data.tabId },
+              files: ['banner.js']
+            }).then(
               () => {
                 chrome.tabs.sendMessage(
                   data.tabId, {
@@ -91,7 +89,7 @@ window.chrome.webRequest.onResponseStarted.addListener(
 
 chrome.runtime.onMessage.addListener((message: any, sender: MessageSender, sendResponse: Function) => {
   if (message.action === 'saveConfiguration') {
-    window.chrome.storage.sync.set({configuration: message.configuration}, () => {
+    chrome.storage.sync.set({configuration: message.configuration}, () => {
       init();
     });
 
@@ -99,7 +97,7 @@ chrome.runtime.onMessage.addListener((message: any, sender: MessageSender, sendR
   }
 
   if (message.action === 'loadConfiguration') {
-    window.chrome.storage.sync.get(['configuration'], (data) => {
+    chrome.storage.sync.get(['configuration'], (data) => {
       const configuration = typeof data.configuration !== 'undefined' ? data.configuration : defaultConfiguration;
       sendResponse({configuration});
     });

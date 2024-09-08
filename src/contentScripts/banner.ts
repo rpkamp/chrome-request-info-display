@@ -1,4 +1,4 @@
-window.chrome.runtime.onMessage.addListener((message: any) => {
+chrome.runtime.onMessage.addListener((message: any) => {
   const callback = () => {
     const div = document.createElement('div');
     div.className = 'environmentIndicatorBanner';
