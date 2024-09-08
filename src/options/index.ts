@@ -25,7 +25,7 @@ saveButton.addEventListener('click', () => {
     JSON.parse(configuration.value);
   } catch (e) {
     saveError.style.display = 'block';
-    saveError.innerText = e.message;
+    saveError.innerText = (e as Error).message;
 
     return;
   }
@@ -35,7 +35,7 @@ saveButton.addEventListener('click', () => {
 
   saveButton.innerText = 'Saving...';
 
-  window.chrome.runtime.sendMessage({
+  chrome.runtime.sendMessage({
     action: 'saveConfiguration',
     configuration: configuration.value
   }, () => {

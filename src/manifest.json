@@ -1,22 +1,21 @@
 {
     "name": "RequestInfo display",
-    "manifest_version": 2,
-    "content_security_policy": "script-src 'self'; object-src 'self'",
+    "manifest_version": 3,
     "description": "Add an information block to websites to indicate website IP, headers, etc",
-    "version": "0.3.0",
+    "version": "1.0.0",
     "minimum_chrome_version": "70",
     "background": {
-        "scripts": [
-            "background.js"
-        ]
+        "service_worker": "background.js"
     },
     "options_ui": {
-        "page": "options.html",
-        "chrome_style": true
+        "page": "options.html"
     },
     "permissions": [
         "storage",
-        "webRequest",
+        "scripting",
+        "webRequest"
+    ],
+    "host_permissions": [
         "http://*/*",
         "https://*/*"
     ],
@@ -26,6 +25,9 @@
         "128": "icons/128.png"
     },
     "web_accessible_resources": [
-        "contents.css"
+        {
+            "resources": ["contents.css"],
+            "matches": ["http://*/*", "https://*/*"]
+        }
     ]
 }
