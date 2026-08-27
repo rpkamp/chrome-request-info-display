@@ -1,11 +1,12 @@
 # RequestInfo Display
 
-![build status](https://img.shields.io/circleci/project/github/rpkamp/chrome-request-info-display.svg) ![users](https://img.shields.io/chrome-web-store/users/acjdjhebifgcpdfefkijjeejjckfahoi.svg?label=users) ![rating](https://img.shields.io/chrome-web-store/stars/acjdjhebifgcpdfefkijjeejjckfahoi.svg)
+Extension for Chrome(ium) based browsers that displays a banner with custom info (like IP) in the bottom right corner of the website.
+Handy to differentiate between staging and production environments for example.
 
-## Donations
+## Support
 
 Like this extension? Buy me a coffee 🙂
 
-[![Donate with PayPal](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)][donate]
+[Send a tip via Revolut][donate]
 
 [donate]: https://paypal.me/rpkamp
