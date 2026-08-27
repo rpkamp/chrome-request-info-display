@@ -1,7 +1,8 @@
 import ResourceType = chrome.webRequest.ResourceType;
+import WebResponseCacheDetails = chrome.webRequest.WebResponseCacheDetails;
 import {MustacheResponseInfoReplacer} from "../src/MustacheResponseInfoReplacer";
 
-const requestInfo = {
+const requestInfo: WebResponseCacheDetails = {
   'ip': '1.2.3.4',
   'method': 'GET',
   'responseHeaders': [

@@ -2,7 +2,7 @@
     "name": "RequestInfo display",
     "manifest_version": 3,
     "description": "Add an information block to websites to indicate website IP, headers, etc",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "minimum_chrome_version": "88",
     "background": {
         "service_worker": "background.js"
